@@ -59,15 +59,37 @@ function save(key, val) {
 
 // State
 let state = {
-  startDate: load('startDate', new Date().toISOString().slice(0, 10)),
+  startDate: load('startDate', '2026-03-31'),
   nextSession: load('nextSession', 1),       // 1, 2, or 3
   logs: load('logs', []),                     // [{date, sessionId, exercises: [{name, weight, reps, sets, notes}]}]
   completedSessions: load('completedSessions', 0),
 };
 
-// First run: set start date
+// First run: set start date and seed data
 if (!localStorage.getItem('startDate')) {
   save('startDate', state.startDate);
+}
+
+// Seed first workout if no logs exist
+if (state.logs.length === 0) {
+  const seedData = [
+    {
+      date: "2026-03-31T09:00:00.000Z",
+      sessionId: 1,
+      sessionName: "Pull + Hinge",
+      exercises: [
+        { name: "Pendlay Row", weight: "55", reps: "12", sets: "4", notes: "Effort 7/10. Last 2 sets working hard to get to 12 reps." },
+        { name: "RDL", weight: "74", reps: "12", sets: "4", notes: "Set 1: 64lb x12. Sets 2-4: 74lb x12, x12, x10. Grip strength weak by rep 8 at 74lb." },
+        { name: "Reverse Deficit Lunge", weight: "BW", reps: "15", sets: "2", notes: "Bodyweight. Set 1: 15/15. Set 2: 12/12." },
+        { name: "Smith Machine Calf Raise", weight: "BW", reps: "15", sets: "3", notes: "Switched to seated calf raise machine. Bodyweight. 15, 15, 15." },
+        { name: "Lat Pulldown", weight: "40", reps: "", sets: "", notes: "" }
+      ]
+    }
+  ];
+  state.logs = seedData;
+  state.nextSession = 2;
+  state.completedSessions = 1;
+  saveState();
 }
 
 function saveState() {
@@ -94,8 +116,8 @@ function getPhaseInfo() {
       reps: '12–15',
       detail: '5–6 sets × 12–15 reps, NOT to failure, 60s rest',
     };
-  } else if (weekNumber <= 8) {
-    // Month 2: weeks 5-8
+  } else if (weekNumber <= 11) {
+    // Month 2: weeks 5-11 (6 accumulation weeks + 1 deload = 7 weeks)
     const m2week = weekNumber - 4;
     const subWeeks = [
       { label: 'Week 1A', sets: 3, reps: '10–12' },
@@ -104,29 +126,19 @@ function getPhaseInfo() {
       { label: 'Week 2B', sets: 6, reps: '10–12' },
       { label: 'Week 3A', sets: 7, reps: '10–12' },
       { label: 'Week 3B', sets: 8, reps: '10–12' },
-      { label: 'Week 4', sets: 3, reps: '10–12' },
+      { label: 'Deload', sets: 3, reps: '10–12' },
     ];
-    // Map 4 weeks to 7 sub-phases: ~2 sub-phases per week
-    // Simplify: each week = 2 sub-phases, week 4 = deload
-    let subIdx;
-    if (m2week === 4) {
-      subIdx = 6; // deload
-    } else {
-      // week 1 -> sub 0,1; week 2 -> sub 2,3; week 3 -> sub 4,5
-      const halfWeek = now.getDay(); // use day of week to determine A/B
-      subIdx = (m2week - 1) * 2 + (halfWeek >= 4 ? 1 : 0);
-    }
-    subIdx = Math.min(subIdx, 6);
+    const subIdx = Math.min(m2week - 1, 6);
     const sub = subWeeks[subIdx];
-    const isDeload = m2week === 4;
+    const isDeload = subIdx === 6;
     return {
       month: 2,
       week: m2week,
       subWeek: sub.label,
-      label: `Month 2 — ${sub.label}${isDeload ? ' (DELOAD)' : ''}`,
+      label: `Month 2 — ${sub.label}${isDeload ? ' 🔄' : ''}`,
       sets: String(sub.sets),
       reps: sub.reps,
-      detail: `${sub.sets} sets × ${sub.reps} reps${isDeload ? ' — DELOAD' : ''}`,
+      detail: `${sub.sets} sets × ${sub.reps} reps${isDeload ? ' — DELOAD WEEK' : ''}, 60s rest`,
     };
   } else {
     // Month 3+
