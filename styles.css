@@ -284,11 +284,126 @@ h3 { font-size: 15px; font-weight: 600; color: var(--text-dim); margin-bottom: 8
 
 .exercise-previous .pb { color: var(--orange); font-weight: 600; }
 
-.input-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
+/* Set-based tracking */
+.sets-header {
+  display: grid;
+  grid-template-columns: 32px 1fr 1fr 28px;
+  gap: 6px;
+  padding: 0 4px;
+  margin-bottom: 4px;
 }
+
+.sets-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sets-container { margin-bottom: 8px; }
+
+.set-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 1fr 28px;
+  gap: 6px;
+  align-items: center;
+  padding: 3px 4px;
+}
+
+.set-number {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-align: center;
+}
+
+.set-input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 10px 8px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+.set-input:focus { outline: none; border-color: var(--accent); }
+.set-input::-webkit-outer-spin-button,
+.set-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+.set-remove {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.set-remove:active { color: var(--warning); }
+
+.add-set-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  background: var(--surface2);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  margin-bottom: 4px;
+}
+
+.add-set-btn:active { background: var(--surface3); }
+
+/* Warmup inputs */
+.warmup-item {
+  padding: 8px 0;
+  color: var(--text-dim);
+  font-size: 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.warmup-name { flex: 1; min-width: 140px; }
+
+.warmup-inputs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.warmup-input {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 8px 6px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  width: 60px;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+.warmup-input:focus { outline: none; border-color: var(--accent); }
+.warmup-input::-webkit-outer-spin-button,
+.warmup-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+.warmup-x { color: var(--text-muted); font-size: 12px; }
 
 .input-group {
   flex: 1;
@@ -304,40 +419,21 @@ h3 { font-size: 15px; font-weight: 600; color: var(--text-dim); margin-bottom: 8
   letter-spacing: 0.5px;
 }
 
-.input-group input, .input-group textarea {
+.exercise-notes {
   background: var(--surface2);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text);
-  padding: 12px;
-  font-size: 18px;
-  font-weight: 600;
-  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  text-align: left;
+  resize: none;
+  height: 40px;
   width: 100%;
   -webkit-appearance: none;
 }
 
-.input-group input:focus, .input-group textarea:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-.input-group textarea {
-  font-size: 14px;
-  font-weight: 400;
-  text-align: left;
-  resize: none;
-  height: 40px;
-}
-
-.input-group input[type="number"] {
-  -moz-appearance: textfield;
-}
-
-.input-group input::-webkit-outer-spin-button,
-.input-group input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-}
+.exercise-notes:focus { outline: none; border-color: var(--accent); }
 
 .complete-session-btn {
   display: block;
@@ -386,6 +482,7 @@ h3 { font-size: 15px; font-weight: 600; color: var(--text-dim); margin-bottom: 8
 .progress-date { color: var(--text-dim); font-size: 13px; }
 .progress-weight { font-size: 18px; font-weight: 700; }
 .progress-detail { font-size: 13px; color: var(--text-dim); }
+.progress-sets-detail { font-size: 12px; color: var(--text-dim); line-height: 1.6; }
 .progress-note { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 2px; }
 .progress-pb { color: var(--orange); font-size: 12px; font-weight: 600; }
 

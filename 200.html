@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0f0f0f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Gym Tracker</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Nav -->
+    <nav id="bottom-nav">
+      <button class="nav-btn active" data-view="dashboard">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Home</span>
+      </button>
+      <button class="nav-btn" data-view="session">
+        <span class="nav-icon">🏋️</span>
+        <span class="nav-label">Workout</span>
+      </button>
+      <button class="nav-btn" data-view="progress">
+        <span class="nav-icon">📈</span>
+        <span class="nav-label">Progress</span>
+      </button>
+      <button class="nav-btn" data-view="history">
+        <span class="nav-icon">📅</span>
+        <span class="nav-label">History</span>
+      </button>
+    </nav>
+
+    <!-- Views -->
+    <main id="view-dashboard" class="view active"></main>
+    <main id="view-session" class="view"></main>
+    <main id="view-progress" class="view"></main>
+    <main id="view-history" class="view"></main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
