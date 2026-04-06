@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gym-tracker-v2';
+const CACHE_NAME = 'gym-tracker-v3';
 const ASSETS = ['/', '/index.html', '/styles.css', '/app.js', '/manifest.json'];
 
 self.addEventListener('install', e => {
@@ -15,8 +15,15 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
+// Network-first: always try fresh files, fall back to cache when offline
 self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request))
+    fetch(e.request)
+      .then(response => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
+        return response;
+      })
+      .catch(() => caches.match(e.request))
   );
 });
