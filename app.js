@@ -22,7 +22,7 @@ const SESSIONS = [
   },
   {
     id: 2,
-    name: 'Press',
+    name: 'Press + Biceps',
     exercises: [
       { name: 'Half Kneeling Landmine Press', startWeight: 'Bar only' },
       { name: 'DB Z Press', startWeight: '10–12 lbs each' },
@@ -30,18 +30,17 @@ const SESSIONS = [
       { name: 'Overhead Cable Extension', startWeight: 'Light', note: 'Tricep triset exercise 1' },
       { name: 'Cable Extension', startWeight: 'Light', note: 'Tricep triset exercise 2' },
       { name: 'Cross Face Extension', startWeight: 'Light', note: 'Tricep triset exercise 3' },
+      { name: 'Seated DB Curl', startWeight: '12–15 lbs' },
     ],
   },
   {
     id: 3,
-    name: 'Deadlift + Legs + Arms',
+    name: 'Deadlift + Legs',
     exercises: [
       { name: 'Conventional Deadlift', startWeight: '85 lbs' },
       { name: 'Goblet Squat', startWeight: 'BW or 10 lbs' },
       { name: 'Cable Pull-Through', startWeight: 'Light' },
       { name: 'Leg Extensions', startWeight: '45–55 lbs', note: '3 × 25 reps' },
-      { name: 'Seated DB Curl', startWeight: '12–15 lbs' },
-      { name: 'EZbar Rolling Extension', startWeight: 'Light' },
       { name: 'Overhead Cable Extension', startWeight: 'Light' },
     ],
   },
