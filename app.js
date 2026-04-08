@@ -37,7 +37,7 @@ const SESSIONS = [
     name: 'Deadlift + Legs + Arms',
     exercises: [
       { name: 'Conventional Deadlift', startWeight: '85 lbs' },
-      { name: 'Box Squat / Split Squat', startWeight: 'BW or 10 lbs each' },
+      { name: 'Goblet Squat', startWeight: 'BW or 10 lbs' },
       { name: 'Cable Pull-Through', startWeight: 'Light' },
       { name: 'Leg Extensions', startWeight: '45–55 lbs', note: '3 × 25 reps' },
       { name: 'Seated DB Curl', startWeight: '12–15 lbs' },
@@ -72,72 +72,7 @@ if (!localStorage.getItem('startDate')) {
   save('startDate', state.startDate);
 }
 
-// Seed data for first two sessions
-if (state.logs.length === 0) {
-  state.logs = [
-    {
-      date: "2026-03-31T09:00:00.000Z",
-      sessionId: 1,
-      sessionName: "Pull + Hinge",
-      exercises: [
-        { name: "Pendlay Row", sets: [
-          { weight: "55", reps: "12" },
-          { weight: "55", reps: "12" },
-          { weight: "55", reps: "12" },
-          { weight: "55", reps: "12" }
-        ], notes: "Effort 7/10. Last 2 sets working hard to get to 12 reps." },
-        { name: "RDL", sets: [
-          { weight: "64", reps: "12" },
-          { weight: "74", reps: "12" },
-          { weight: "74", reps: "12" },
-          { weight: "74", reps: "10" }
-        ], notes: "Grip strength weak by rep 8 at 74lb." },
-        { name: "Reverse Deficit Lunge", sets: [
-          { weight: "BW", reps: "15/15" },
-          { weight: "BW", reps: "12/12" }
-        ], notes: "Bodyweight." },
-        { name: "Smith Machine Calf Raise", sets: [
-          { weight: "BW", reps: "15" },
-          { weight: "BW", reps: "15" },
-          { weight: "BW", reps: "15" }
-        ], notes: "Switched to seated calf raise machine." },
-        { name: "Lat Pulldown", sets: [
-          { weight: "40", reps: "" }
-        ], notes: "" }
-      ],
-      warmup: [
-        { name: "Band Pull-Apart", reps: "10", weight: "" },
-        { name: "Wall Slides", reps: "8", weight: "" },
-        { name: "YTLIs", reps: "8", weight: "2.5" },
-        { name: "Seated Face Pull", reps: "", weight: "", notes: "skipped" },
-        { name: "KB Swing", reps: "8", weight: "20" }
-      ]
-    },
-    {
-      date: "2026-04-01T09:00:00.000Z",
-      sessionId: 2,
-      sessionName: "Press",
-      exercises: [
-        { name: "Half Kneeling Landmine Press", sets: [], notes: "" },
-        { name: "DB Z Press", sets: [], notes: "" },
-        { name: "DB Floor Press", sets: [], notes: "" },
-        { name: "Overhead Cable Extension", sets: [
-          { weight: "5", reps: "9" },
-          { weight: "5", reps: "12" }
-        ], notes: "" },
-        { name: "Cable Extension", sets: [
-          { weight: "5", reps: "15" },
-          { weight: "10", reps: "15" }
-        ], notes: "" },
-        { name: "Cross Face Extension", sets: [], notes: "Ran out of time" }
-      ],
-      warmup: []
-    }
-  ];
-  state.nextSession = 3;
-  state.completedSessions = 2;
-  saveState();
-}
+// No seed data — all sessions logged from the app directly
 
 function saveState() {
   save('nextSession', state.nextSession);
@@ -285,6 +220,7 @@ function render() {
 
 // Track active session set data
 let activeSessionSets = {};
+let activeWarmupData = {};
 
 function renderDashboard() {
   const el = document.getElementById('view-dashboard');
@@ -308,8 +244,8 @@ function renderDashboard() {
     <h1>Gym Tracker</h1>
     <p class="subtitle">Caroline's Training</p>
     <div class="phase-banner">
-      <div class="phase-title">${phase.label}</div>
-      <div class="phase-detail">${phase.detail}</div>
+      <div class="phase-title">Workout ${state.completedSessions + 1}</div>
+      <div class="phase-detail">${state.completedSessions} sessions completed</div>
     </div>
     <div class="week-strip">
       ${days.map((d, i) => `
@@ -383,28 +319,30 @@ function renderSession() {
         <span id="warmup-arrow">▶</span>
       </div>
       <div class="warmup-list" id="warmup-list">
-        ${WARMUP.map((w, i) => `
+        ${WARMUP.map((w, i) => {
+          const saved = activeWarmupData[i] || {};
+          return `
           <div class="warmup-item">
             <div class="warmup-name">
               <label class="warmup-check">
-                <input type="checkbox" id="warmup-check-${i}">
+                <input type="checkbox" id="warmup-check-${i}" ${saved.checked ? 'checked' : ''}>
                 <span class="check-box">✓</span>
                 ${w.name}
               </label>
             </div>
             ${w.hasWeight ? `
               <div class="warmup-inputs">
-                <input type="number" inputmode="decimal" id="warmup-weight-${i}" placeholder="lbs" class="warmup-input">
+                <input type="number" inputmode="decimal" id="warmup-weight-${i}" placeholder="lbs" class="warmup-input" value="${saved.weight || ''}">
                 <span class="warmup-x">×</span>
-                <input type="number" inputmode="numeric" id="warmup-reps-${i}" placeholder="reps" class="warmup-input">
+                <input type="number" inputmode="numeric" id="warmup-reps-${i}" placeholder="reps" class="warmup-input" value="${saved.reps || ''}">
               </div>
             ` : `
               <div class="warmup-inputs">
-                <input type="number" inputmode="numeric" id="warmup-reps-${i}" placeholder="reps" class="warmup-input" style="max-width:80px">
+                <input type="number" inputmode="numeric" id="warmup-reps-${i}" placeholder="reps" class="warmup-input" style="max-width:80px" value="${saved.reps || ''}">
               </div>
             `}
           </div>
-        `).join('')}
+        `}).join('')}
       </div>
     </div>
 
@@ -464,11 +402,18 @@ function renderSession() {
     arrow.textContent = list.classList.contains('open') ? '▼' : '▶';
   });
 
+  // Save warmup data on any input change
+  el.querySelectorAll('#warmup-list input').forEach(input => {
+    input.addEventListener('change', saveCurrentWarmup);
+    input.addEventListener('blur', saveCurrentWarmup);
+  });
+
   // Add set buttons
   el.querySelectorAll('.add-set-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const exIdx = parseInt(btn.dataset.exercise);
       saveCurrentSets();
+      saveCurrentWarmup();
       activeSessionSets[exIdx].push({ weight: '', reps: '' });
       renderSession();
       // Scroll to the new set
@@ -483,6 +428,7 @@ function renderSession() {
       const exIdx = parseInt(btn.dataset.exercise);
       const setIdx = parseInt(btn.dataset.set);
       saveCurrentSets();
+      saveCurrentWarmup();
       if (activeSessionSets[exIdx].length > 1) {
         activeSessionSets[exIdx].splice(setIdx, 1);
         renderSession();
@@ -499,6 +445,7 @@ function renderSession() {
   // Complete session
   document.getElementById('btn-complete').addEventListener('click', () => {
     saveCurrentSets();
+    saveCurrentWarmup();
     
     const exerciseData = exercises.map((ex, i) => ({
       name: ex.name,
@@ -511,16 +458,14 @@ function renderSession() {
       if (!confirm('No exercises logged. Complete anyway?')) return;
     }
 
-    // Collect warmup data
+    // Collect warmup data from saved state (persisted through re-renders)
     const warmupData = WARMUP.map((w, i) => {
-      const checked = document.getElementById(`warmup-check-${i}`).checked;
-      const repsEl = document.getElementById(`warmup-reps-${i}`);
-      const weightEl = document.getElementById(`warmup-weight-${i}`);
+      const saved = activeWarmupData[i] || {};
       return {
         name: w.name,
-        done: checked,
-        reps: repsEl ? repsEl.value : '',
-        weight: weightEl ? weightEl.value : '',
+        done: saved.checked || false,
+        reps: saved.reps || '',
+        weight: saved.weight || '',
       };
     });
 
@@ -534,8 +479,9 @@ function renderSession() {
 
     state.logs.push(log);
     state.completedSessions++;
-    state.nextSession = state.nextSession === 3 ? 1 : state.nextSession + 1;
+    state.nextSession = state.nextSession >= SESSIONS.length ? 1 : state.nextSession + 1;
     activeSessionSets = {};
+    activeWarmupData = {};
     saveState();
     navigate('dashboard');
   });
@@ -554,6 +500,19 @@ function saveCurrentSets() {
       });
     });
     activeSessionSets[exIdx] = sets;
+  });
+}
+
+function saveCurrentWarmup() {
+  WARMUP.forEach((w, i) => {
+    const checkEl = document.getElementById(`warmup-check-${i}`);
+    const repsEl = document.getElementById(`warmup-reps-${i}`);
+    const weightEl = document.getElementById(`warmup-weight-${i}`);
+    activeWarmupData[i] = {
+      checked: checkEl ? checkEl.checked : false,
+      reps: repsEl ? repsEl.value : '',
+      weight: weightEl ? weightEl.value : '',
+    };
   });
 }
 
